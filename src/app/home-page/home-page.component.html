@@ -1,0 +1,174 @@
+<html>
+    <header class="user-header">
+        <img class="logo" src="assets/image/Screenshot (316).png" alt="logo" height="60px">
+        <span class="logo-text">Water Billing System</span>
+        <nav class="nav">
+            <ul class="nav_links">
+                <li><a routerLink="/transaction" routerLinkActive="linkActive">Transaction</a></li>
+                <li><a routerLink="/consumer" routerLinkActive="linkActive">Concessionaire</a></li>
+                <li><a routerLink="/user" routerLinkActive="linkActive">User Accounts</a></li>
+            </ul>
+        </nav>
+        <a routerLink="/login" routerLinkActive="linkActive"><span class="cta"></span><button class="signout"><span>Sign Out </span></button></a>
+    </header>
+    <body class="user-body">
+        <div class="main-container">
+            <input type="text" id="searchInput" onkeyup="myFunction()" placeholder="Search a name..." title="Type in a name">
+            <table id="myTable">
+                <tr>
+                    <th class="th-name">Name</th>
+                    <th class="th-location">Location</th>
+                    <th class="th-phone">PhoneNumber</th>
+                    <th class="th-email">Email</th>
+                    <th class="th-act">Action</th>
+                </tr>
+                <tr *ngFor="let tran of transactions">
+                    <td class="td-name" >{{ tran.f_id}}</td>
+                    <td class="td-cr">{{ tran.current_record }}</td>
+                    <td class="td-pr"> {{ tran.previous_record }}</td>
+                    <td class="td-um">{{ tran.unpaid_month }}</td>
+                    <td class="td-act">
+                            <button class="btn-action"  (click)="getTranView(tran.consumerId)" onclick="document.getElementById('id02').style.display='block'"><img src="assets/image/icons8-view-more-30.png" alt="new-icon"></button>
+                            <button class="btn-action" (click)="getTran(tran._id)" onclick="document.getElementById('id03').style.display='block'"><img src="assets/image/icons8-edit-30.png" alt="edit-icon"></button>
+                            <button class="btn-action" (click)="deleteTransaction(tran._id)"><img src="assets/image/icons8-trash-30.png" alt="delete-icon"></button>
+                    </td>
+                </tr>
+            </table>
+        </div>               
+        <script>
+            function myFunction() {
+                var input, filter, table, tr, td, i;
+                input = document.getElementById("myInput");
+                filter = input.value.toUpperCase();
+                table = document.getElementById("myTable");
+                tr = table.getElementsByTagName("tr");
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td")[0];
+                    if (td) {
+                        if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }       
+                }
+            }
+        </script> 
+    </body>
+</html>
+
+<!-- Modals -->
+<!-- Modals -->
+<div id="id01" class="update-user-modal">
+        <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+        <form class="modal-content" (submit)="addTransaction()" #updateUserForm="ngForm">
+            <h1 class="modal-title">Update Form for User Account</h1>
+            <div class="form-modal-container">
+                <label class="modal-label" for="signName">Name</label>
+                <input id="modal-input" type="text" placeholder="ex: Juan Dela Cruz" name="signName" required #signName="ngModel" [(ngModel)]="signName_" [class.invalid]="signName.invalid && signName.touched">
+                <div *ngIf="signName.invalid && signName.touched" class="text-danger"><img src="assets/image/icons8-error-30.png" alt="warning"></div>
+    
+                <label class="modal-label" for="signUname">Username</label>
+                <input id="modal-input" type="text" placeholder="Username" name="signUname" required #signUname="ngModel" [(ngModel)]="signUname_" [class.invalid]="signUname.invalid && signUname.touched">
+                <div *ngIf="signUname.invalid && signUname.touched" class="text-danger"><img src="assets/image/icons8-error-30.png" alt="warning"></div>
+    
+                <label class="modal-label" for="signPassword">Password</label>
+                <input id="modal-input" type="password" placeholder="Password" name="signPassword" required #signPassword="ngModel" [(ngModel)]="signPassword_" [class.invalid]="signPassword.invalid && signPassword.touched">
+                <div *ngIf="signPassword.invalid && signPassword.touched" class="text-danger"><img src="assets/image/icons8-error-30.png" alt="warning"></div>
+    
+                <label class="modal-label" for="signCPassword">Confirm Password</label>
+                <input id="modal-input" type="password" placeholder="Password" name="signCPassword" required #signCPassword="ngModel" [(ngModel)]="signCPassword_" [class.invalid]="signCPassword.invalid && signCPassword.touched">
+                <div *ngIf="signCPassword.invalid && signCPassword.touched" class="text-danger"><img src="assets/image/icons8-error-30.png" alt="warning"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="document.getElementById('id01').style.display='none'" class="btn-cancel">Cancel</button>
+                <button type="submit" class="btn-save-update" [disabled]="updateUserForm.form.invalid">Save</button>
+            </div>
+        </form> 
+    </div>
+    <!-- end modal 1 -->
+    <div id="id02" class="update-user-modal">
+        <span onclick="document.getElementById('id02').style.display='none'" class="close" title="Close Modal">&times;</span>
+        <div class="modal-content">
+            <h1 class="modal-title">Concessionaire Details</h1>
+            <div class="form-modal-container" *ngFor="let upT of upTransView">
+                <!-- <label>Transaction ID:</label>
+                <h3>{{ upTransView._id }}</h3>
+                <br> -->
+                <label>Name: </label>
+                {{ upT.name}}
+                <br>
+                <label>Location:</label>
+                {{ upT.location}}
+                <br>
+                <label>Phone Number:</label>
+                {{ upT.phoneNo }}
+                <br>
+                <label>Email: </label>
+                {{ upT.email }}
+                <br>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="document.getElementById('id02').style.display='none'" class="btn-cancel">Close</button>
+            </div>
+        </div> 
+    </div>
+    <!-- end modal2 -->
+    <div id="id03" class="update-user-modal">
+        <span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>
+        <form class="modal-content" (submit)="addTransaction()" #updateUserForm="ngForm">
+            <h1 class="modal-title">Update Form for Transaction</h1>
+            <div class="form-modal-container">
+                    <!-- <input id="modal-input" name="c_id" #cId="ngModel" [(ngModel)]="c_id" value=""> -->
+                    <label class="modal-label" for="preDate">Previous_Date</label>
+                    <input id="modal-input" type="text" placeholder="" name="previousDate" required #pDate="ngModel" [(ngModel)]="previousDate1" [class.invalid]="pDate.invalid && pDate.touched" value="{{ upTrans.previous_date | date: 'shortDate' }}">
+                    <div *ngIf="pDate.invalid && pDate.touched" class="text-danger"><img src="assets/image/icons8-error-30.png" alt="warning"></div>
+                    
+                    <label class="modal-label" for="preRecord">Previous_Record</label>
+                    <input id="modal-input" type="Number" placeholder="" name="previousRecord" required #pRecord="ngModel" [(ngModel)]="previousRecord1" [class.invalid]="pRecord.invalid && pRecord.touched" value="{{ upTrans.previous_record}}">
+                    <div *ngIf="pRecord.invalid && pRecord.touched" class="text-danger"><img src="assets/image/icons8-error-30.png" alt="warning"></div>
+                    
+                    <label class="modal-label" for="curDate">Current_Date</label>
+                    <input id="modal-input" type="text" placeholder="" name="currentDate" required #cDate="ngModel" [(ngModel)]="currentDate1" [class.invalid]="cDate.invalid && cDate.touched" value="{{ upTrans.current_date | date: 'shortDate' }}">
+                    <div *ngIf="cDate.invalid && cDate.touched" class="text-danger"><img src="assets/image/icons8-error-30.png" alt="warning"></div>
+                    
+                    <label class="modal-label" for="curRecord">Current_Record</label>
+                    <input id="modal-input" type="Number" placeholder="" name="currentRecord" required #cRecord="ngModel" [(ngModel)]="currentRecord1" [class.invalid]="cRecord.invalid && cRecord.touched" value="{{ upTrans.current_record}}">
+                    <div *ngIf="cRecord.invalid && cRecord.touched" class="text-danger"><img src="assets/image/icons8-error-30.png" alt="warning"></div>
+                    
+                    <label class="modal-label" for="con">Consumption</label>
+                    <input id="modal-input" type="Number" placeholder="" name="consumpt" required #cons="ngModel" [(ngModel)]="consumpt1" [class.invalid]="cons.invalid && cons.touched" value="{{ upTrans.consumption}}">
+                    <div *ngIf="cons.invalid && cons.touched" class="text-danger"><img src="assets/image/icons8-error-30.png" alt="warning"></div>
+                    
+                    <label class="modal-label" for="duepayment">Due Payment Date</label>
+                    <input id="modal-input" type="text" placeholder="" name="duepaymentDate" required #due="ngModel" [(ngModel)]="duepaymentDate1" [class.invalid]="due.invalid && due.touched" value="{{ upTrans.due_payment_date | date:'shortDate' }}">
+                    <div *ngIf="due.invalid && due.touched" class="text-danger"><img src="assets/image/icons8-error-30.png" alt="warning"></div>
+                    
+                    <label class="modal-label" for="curAmount">Current Amount Due</label>
+                    <input id="modal-input" type="Number" placeholder="" name="caDue" required #cAmount="ngModel" [(ngModel)]="caDue1" [class.invalid]="cAmount.invalid && cAmount.touched" value="{{ upTrans.current_amount_due}}">
+                    <div *ngIf="cAmount.invalid && cAmount.touched" class="text-danger"><img src="assets/image/icons8-error-30.png" alt="warning"></div>
+                    
+                    <label class="modal-label" for="unmonth">Unpaid Month</label>
+                    <input id="modal-input" type="Number" placeholder="" name="unpaidMonth" required #umonth="ngModel" [(ngModel)]="unpaidMonth1" [class.invalid]="umonth.invalid && umonth.touched" value="{{ upTrans.unpaid_month }}">
+                    <div *ngIf="umonth.invalid && umonth.touched" class="text-danger"><img src="assets/image/icons8-error-30.png" alt="warning"></div>
+                    </div>
+            <div class="modal-footer">
+                <button type="button" onclick="document.getElementById('id03').style.display='none'" class="btn-cancel">Cancel</button>
+                <input type="submit" class="btn-save-update" (click)="updateTransaction(upTrans._id)">
+            </div>
+        </form> 
+    </div>
+    <!-- end modal3 -->
+    <!-- END MODALS -->
+    <script>
+        var modal1 = document.getElementById('id01');
+        var modal2 = document.getElementById('id02');
+        var moda3 = document.getElementById('id03');
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal || event.target == modal2 || event.target == modal3) {
+            modal.style.display = "none";
+            }
+        }
+    </script>
